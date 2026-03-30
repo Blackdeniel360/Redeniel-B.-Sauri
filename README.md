@@ -1,0 +1,1 @@
+Hello Sir Jerome I made some modifications reszied the row posters and the trending now posters, and i made the nav bar blur when scrolled. I encountered some errors but managed to fix most of them and had some help with AI on some of my codes but it is mostly customized by me.
