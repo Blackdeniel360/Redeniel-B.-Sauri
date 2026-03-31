@@ -10,7 +10,7 @@ function App() {
     
       <Nav />
       <Banner />
-
+    
       <Row
         title="NETFLIX ORIGINALS"
         fetchUrl={requests.fetchNetflixOriginals}
