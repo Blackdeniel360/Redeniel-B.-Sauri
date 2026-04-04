@@ -37,7 +37,7 @@ const handleClick = async (movie) => {
       
       // Fetch video data from TMDB using the movie/show ID
       const response = await axios.get(
-        `/${isTV}/${movie.id}/videos?api_key=be5b04737a20f676a9135c108e739aeb`
+        `${isTV}/${movie.id}/videos?api_key=${process.env.REACT_APP_TMDB_API_KEY}`
       );
 
       // Find a YouTube video that is a "Trailer"
