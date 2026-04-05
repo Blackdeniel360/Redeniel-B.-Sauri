@@ -13,10 +13,14 @@ function Banner() {
 
  
 const fetchRandomMovie = async () => {
-  const request = await axios.get(requests.fetchNetflixOriginals);
-  setMovie(
-    request.data.results[Math.floor(Math.random() * request.data.results.length)]
-  );
+  try {
+    const request = await axios.get(requests.fetchNetflixOriginals);
+    setMovie(
+      request.data.results[Math.floor(Math.random() * request.data.results.length)]
+    );
+  } catch (error) {
+    console.log("Error fetching movie:", error);
+  }
 };
 
 useEffect(() => {
@@ -28,7 +32,7 @@ useEffect(() => {
   if (!showTrailer) {
     interval = setInterval(() => {
       fetchRandomMovie();
-    }, 5000);
+    }, 6000);
   }
   return () => clearInterval(interval);
 }, [showTrailer]); // Re-runs/clears when you play or close a trailer
