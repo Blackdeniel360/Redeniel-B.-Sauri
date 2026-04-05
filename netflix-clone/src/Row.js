@@ -32,21 +32,20 @@ const handleClick = async (movie) => {
     setTrailerUrl("");
   } else {
     try {
-      // Determine if it's a TV show or Movie to use the correct API path
-      const isTV = movie?.first_air_date ? "tv" : "movie";
-      
-      // Fetch video data from TMDB using the movie/show ID
+      const contentType = movie?.first_air_date ? "tv" : "movie";
+
       const response = await axios.get(
-        `${isTV}/${movie.id}/videos?api_key=${process.env.REACT_APP_TMDB_API_KEY}`
+        `/${contentType}/${movie.id}/videos?api_key=${process.env.REACT_APP_TMDB_API_KEY}`
       );
 
-      // Find a YouTube video that is a "Trailer"
       const trailer = response.data.results.find(
-        (vid) => vid.site === "YouTube" && (vid.type === "Trailer" || vid.type === "Teaser")
+        (vid) =>
+          vid.site === "YouTube" &&
+          (vid.type === "Trailer" || vid.type === "Teaser")
       );
 
       if (trailer) {
-        setTrailerUrl(trailer.key); // The 'key' is the YouTube ID (e.g., 'ndlPuyH279Y')
+        setTrailerUrl(trailer.key);
       } else {
         alert("Official trailer not found on TMDB for this title.");
       }
