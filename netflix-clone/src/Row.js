@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "./axios";
 import "./Row.css";
 import YouTube from "react-youtube";
@@ -10,6 +10,8 @@ function Row({ title, fetchUrl, isLargeRow }) {
   const [movies, setMovies] = useState([]);
   const [trailerUrl, setTrailerUrl] = useState("");
 
+  const rowRef = useRef(null);
+
   useEffect(() => {
     async function fetchData() {
       const request = await axios.get(fetchUrl);
@@ -18,6 +20,19 @@ function Row({ title, fetchUrl, isLargeRow }) {
     }
     fetchData();
   }, [fetchUrl]);
+   
+  const scroll = (direction) => {
+    if (rowRef.current) {
+      const { scrollLeft, clientWidth } = rowRef.current;
+      
+      // Calculate how far to scroll (one full screen width)
+      const scrollTo = direction === "left" 
+        ? scrollLeft - clientWidth 
+        : scrollLeft + clientWidth;
+      
+      rowRef.current.scrollTo({ left: scrollTo, behavior: "smooth" });
+    }
+  };
 
   const opts = {
     height: "500",
@@ -56,19 +71,34 @@ const handleClick = async (movie) => {
   }
 };
 
-  return (
+ return (
     <div className="row">
       <h2>{title}</h2>
-      <div className="row__posters">
-        {movies.map((movie) => (
-          <img
-            key={movie.id}
-            onClick={() => handleClick(movie)}
-            className={`row__poster ${isLargeRow && "row__posterLarge"}`}
-            src={`${base_url}${isLargeRow ? movie.poster_path : movie.backdrop_path}`}
-            alt={movie.name}
-          />
-        ))}
+      <div className="row__wrapper">
+        <div className="row__arrow left" onClick={() => scroll("left")}>
+          <span>{"<"}</span>
+        </div>
+
+        <div className="row__posters" ref={rowRef}>
+          {movies.map((movie) => (
+            <div key={movie.id} className="row__posterContainer" onClick={() => handleClick(movie)}>
+              <img
+                className={`row__poster ${isLargeRow && "row__posterLarge"}`}
+                src={`${base_url}${isLargeRow ? movie.poster_path : movie.backdrop_path}`}
+                alt={movie?.name || movie?.title}
+              />
+              <div className="row__posterOverlay">
+                <h4 className="row__posterTitle">
+                  {movie?.title || movie?.name || movie?.original_name}
+                </h4>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="row__arrow right" onClick={() => scroll("right")}>
+          <span>{">"}</span>
+        </div>
       </div>
 
       {trailerUrl && (
